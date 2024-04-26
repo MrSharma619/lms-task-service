@@ -1,0 +1,13 @@
+server:
+  port: 5002
+
+spring:
+  application:
+    name: TASK_SERVICE
+  jpa:
+    hibernate:
+      ddl-auto: update
+  datasource:
+    url: jdbc:postgresql://localhost:5432/lms_task_service
+    username: postgres
+    password: post
