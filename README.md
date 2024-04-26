@@ -12,3 +12,5 @@ it contains bunch of services related to tasks
 will be implementing other services in future
 
 will use microservice architecture.  
+
+update application.yaml accordingly.  
