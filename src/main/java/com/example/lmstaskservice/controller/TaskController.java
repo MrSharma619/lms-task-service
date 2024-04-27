@@ -94,7 +94,9 @@ public class TaskController {
 
     }
 
-    @PatchMapping("/{taskId}/complete")
+    //open feign doesnt support patch
+    //so modified to PUT
+    @PutMapping("/{taskId}/complete")
     public ResponseEntity<Task> completeTask(@PathVariable UUID taskId) throws Exception {
 
         Task task = service.completeTask(taskId);
