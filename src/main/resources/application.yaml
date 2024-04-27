@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: TASK_SERVICE
+    name: TASK-SERVICE
   jpa:
     hibernate:
       ddl-auto: update
