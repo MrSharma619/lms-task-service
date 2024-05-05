@@ -77,6 +77,10 @@ public class TaskService implements TaskManager {
             existingTask.setDeadline(updatedTask.getDeadline());
         }
 
+        if(updatedTask.getTags() != null){
+            existingTask.setTags(updatedTask.getTags());
+        }
+
         return repository.save(existingTask);
 
     }
