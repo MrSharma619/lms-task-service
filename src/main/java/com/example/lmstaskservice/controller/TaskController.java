@@ -30,7 +30,7 @@ public class TaskController {
 
         UserDto user = userManager.getUserProfile(token);
 
-        Task createdTask = service.createTask(task, user.getRole());
+        Task createdTask = service.createTask(task, user.getRole(), user.getId());
 
         return new ResponseEntity<>(createdTask, HttpStatus.CREATED);
 
@@ -53,6 +53,20 @@ public class TaskController {
         UserDto user = userManager.getUserProfile(token);
 
         List<Task> tasks = service.getTasksAssignedToUser(user.getId(), status);
+
+        return new ResponseEntity<>(tasks, HttpStatus.OK);
+
+    }
+
+    @GetMapping("/byTeacher")
+    public ResponseEntity<List<Task>> getTasksCreatedByUser(
+            @RequestParam(required = false) TaskStatus status,
+            @RequestHeader("Authorization") String token
+    ){
+
+        UserDto user = userManager.getUserProfile(token);
+
+        List<Task> tasks = service.getTasksCreatedByUser(user.getId(), status);
 
         return new ResponseEntity<>(tasks, HttpStatus.OK);
 
@@ -94,7 +108,9 @@ public class TaskController {
 
     }
 
-    @PatchMapping("/{taskId}/complete")
+    //open feign doesnt support patch
+    //so modified to PUT
+    @PutMapping("/{taskId}/complete")
     public ResponseEntity<Task> completeTask(@PathVariable UUID taskId) throws Exception {
 
         Task task = service.completeTask(taskId);

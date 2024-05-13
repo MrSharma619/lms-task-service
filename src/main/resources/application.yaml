@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: TASK_SERVICE
+    name: TASK-SERVICE
   jpa:
     hibernate:
       ddl-auto: update
@@ -11,3 +11,12 @@ spring:
     url: jdbc:postgresql://localhost:5432/lms_task_service
     username: postgres
     password: post
+
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    serviceUrl:
+      defaultZone: http://localhost:8081/eureka/

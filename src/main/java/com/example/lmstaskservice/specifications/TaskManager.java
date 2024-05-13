@@ -11,7 +11,7 @@ import java.util.UUID;
 // and implementations as service
 public interface TaskManager {
 
-    Task createTask(Task task, String requesterRole) throws Exception;
+    Task createTask(Task task, String requesterRole, UUID createdByUserId) throws Exception;
 
     Task getTaskById(UUID taskId) throws Exception;
 
@@ -24,6 +24,8 @@ public interface TaskManager {
     Task assignToUser(UUID taskId, UUID userId) throws Exception;
 
     List<Task> getTasksAssignedToUser(UUID userId, TaskStatus status);
+
+    List<Task> getTasksCreatedByUser(UUID userId, TaskStatus status);
 
     Task completeTask(UUID taskId) throws Exception;
 

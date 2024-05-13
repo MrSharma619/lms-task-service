@@ -8,24 +8,27 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
+
 public class TaskService implements TaskManager {
 
     @Autowired
     private TaskRepository repository;
 
     @Override
-    public Task createTask(Task task, String requesterRole) throws Exception {
+    public Task createTask(Task task, String requesterRole, UUID createdByUserId) throws Exception {
 
         if (!requesterRole.equals("ROLE_TEACHER")){
             throw new Exception("Only teachers can create tasks...");
         }
 
         task.setId(UUID.randomUUID());
+        task.setCreatedByUserId(createdByUserId);
         task.setCreatedAt(LocalDateTime.now());
         task.setStatus(TaskStatus.PENDING);
 
@@ -77,6 +80,10 @@ public class TaskService implements TaskManager {
             existingTask.setDeadline(updatedTask.getDeadline());
         }
 
+        if(updatedTask.getTags() != null){
+            existingTask.setTags(updatedTask.getTags());
+        }
+
         return repository.save(existingTask);
 
     }
@@ -94,7 +101,16 @@ public class TaskService implements TaskManager {
     public Task assignToUser(UUID taskId, UUID userId) throws Exception {
         Task existingTask = getTaskById(taskId);
 
-        existingTask.setAssignedUserId(userId);
+        List<UUID> userUuids = existingTask.getAssignedUserId();
+        if(userUuids == null){
+            userUuids = new ArrayList<>();
+            userUuids.add(userId);
+        }
+        else {
+            userUuids.add(userId);
+        }
+
+        existingTask.setAssignedUserId(userUuids);
         existingTask.setStatus(TaskStatus.ASSIGNED);
 
         return repository.save(existingTask);
@@ -106,6 +122,20 @@ public class TaskService implements TaskManager {
         List<Task> allTasksAssignedToUser = repository.findByAssignedUserId(userId);
 
         List<Task> filteredTasks = allTasksAssignedToUser
+                .stream()
+                .filter(
+                        task -> status == null || task.getStatus().name().equalsIgnoreCase(status.toString())
+                )
+                .collect(Collectors.toList());
+
+        return filteredTasks;
+    }
+
+    @Override
+    public List<Task> getTasksCreatedByUser(UUID userId, TaskStatus status) {
+        List<Task> allTasksCreatedByUser = repository.findByCreatedByUserId(userId);
+
+        List<Task> filteredTasks = allTasksCreatedByUser
                 .stream()
                 .filter(
                         task -> status == null || task.getStatus().name().equalsIgnoreCase(status.toString())
