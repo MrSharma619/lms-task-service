@@ -12,7 +12,7 @@ import java.util.UUID;
 public interface TaskRepository extends JpaRepository<Task, UUID> {
 
     //need to use custom query here
-    @Query(value = "SELECT * FROM task WHERE :userId = ANY (assigned_user_id)", nativeQuery = true)
+    @Query(value = "SELECT * FROM tasks WHERE :userId = ANY (assigned_user_id)", nativeQuery = true)
     public List<Task> findByAssignedUserId(UUID userId);
 
     public List<Task> findByCreatedByUserId(UUID userId);
