@@ -1,9 +1,11 @@
 package com.example.lmstaskservice.controller;
 
+import com.example.lmstaskservice.dto.MessageDto;
 import com.example.lmstaskservice.dto.UserDto;
 import com.example.lmstaskservice.entity.Task;
 import com.example.lmstaskservice.entity.TaskStatus;
 import com.example.lmstaskservice.service.TaskService;
+import com.example.lmstaskservice.specifications.NotificationManager;
 import com.example.lmstaskservice.specifications.UserManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,6 +25,9 @@ public class TaskController {
 
     @Autowired
     private UserManager userManager;
+
+    @Autowired
+    private NotificationManager notificationManager;
 
     @PostMapping
     public ResponseEntity<Task> createTask(@RequestBody Task task,
@@ -85,6 +90,16 @@ public class TaskController {
             @PathVariable UUID userId
     ) throws Exception {
         Task task = service.assignToUser(taskId, userId);
+
+        //send notification
+        if(task.getAssignedUserId().contains(userId)){
+            notificationManager.sendMessage(
+                    new MessageDto(
+                            "Task " + task.getTitle() + " has been assigned to you.",
+                            userId
+                    )
+            );
+        }
 
         return new ResponseEntity<>(task, HttpStatus.OK);
     }
