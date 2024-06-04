@@ -95,7 +95,7 @@ public class TaskController {
         if(task.getAssignedUserId().contains(userId)){
             notificationManager.sendMessage(
                     new MessageDto(
-                            "Task " + task.getTitle() + " has been assigned to you.",
+                            "Task \"" + task.getTitle() + "\" has been assigned to you.",
                             userId
                     )
             );
